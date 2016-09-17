@@ -1,0 +1,45 @@
+﻿Sebastian Song
+
+
+Title: [undecided]
+
+
+Number of Players: Single
+
+
+Genre/Game Inspiration: Roguelike, Binding of Isaac, Legend of Zelda
+
+
+Elevator Pitch: 2D topdown roguelike puzzler. Legend of Zelda hookshot. Different hook attachments (grapple, bounce, blunt, explosive, piercing, etc). 
+
+
+Main Goals:
+By Pitch day: Game idea solidified, roles understood by team
+(9/17): code architecture, art/music workflow established
+(9/24): movement, wall prefabs, turning
+(10/1): main hookshot mechanic implemented (wall grab), basic tile art
+(10/8): hookshot mechanic (item grab)
+(10/15): hookshot attachment (bounce), attachment switching
+(10/22): enemies (simple AI, enemy types)
+(10/29): hookshot attachment (blunt)
+(11/5): hookshot attachment (explosive), design interesting levels/puzzlesx
+(11/12): Preliminary Showcase day. Should be feature-complete 
+(11/19): menu/UI
+(11/26): more levels/puzzles/enemy types
+(12/3): continue polishing everything
+(some time dead week 12/3-12/10): Final Showcase. Game should be complete
+
+
+Mobile??? (auto movement)
+
+
+Code Architecture:
+* Player class
+   * Hook
+* Hook class (abstract class)
+   * Void fire
+* Hook subclasses extend hook class
+   * Grapple : Hook
+   * Bounce : Hook
+   * Blunt : Hook
+   * Explosive : Hook
