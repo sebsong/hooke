@@ -8,26 +8,31 @@ public class Player : AbstractCharacter {
 
 	Rigidbody2D rigidBody;
 
+	public GameObject hookObj;
 	AbstractHook hook;
 
 	// Use this for initialization
 	void Start () {
 		rigidBody = GetComponent<Rigidbody2D> ();
+		hook = hookObj.GetComponent<GrappleHook> ();
 		_x = transform.position.x;
 		_y = transform.position.y;
 		Speed = 3f;
-		hook = GetComponent<GrappleHook> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		Move ();
-		Rotate ();
+		if (!hook.isHooked && !hook.isFired) {
+			Move ();
+			Rotate ();
+		}
 		if (Health <= 0) {
 			Die ();
 		}
 		if (Input.GetKeyDown ("space")) {
 			hook.Fire ();
+			rigidBody.velocity = Vector2.zero;
+			rigidBody.angularVelocity = 0;
 		}
 	}
 

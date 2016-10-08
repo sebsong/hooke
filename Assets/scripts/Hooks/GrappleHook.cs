@@ -4,13 +4,15 @@ using System.Collections;
 public class GrappleHook : AbstractHook {
 
 	// Use this for initialization
-	void Start () {
+	protected override void Start () {
 		base.Start ();
-		Speed = 15f;
+		Speed = 7f;
+		RetractSpeed = 5f;
 	}
 	
 //	// Update is called once per frame
 //	void Update () {
 //	
 //	}
+
 }
