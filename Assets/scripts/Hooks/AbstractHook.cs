@@ -69,7 +69,7 @@ public abstract class AbstractHook : MonoBehaviour {
 			if (isPulling) {
 				pulledRb.velocity = dirHook * RetractSpeed;
 			}
-			if (Vector2.Distance(player.transform.position, transform.position) < minDist) {
+			if (Vector2.Distance(player.transform.position, transform.position) < minDist || playerRb.velocity == Vector2.zero) {
 				isHooked = false;
 				gameObject.SetActive (false);
 				if (isPulling) {
@@ -82,8 +82,7 @@ public abstract class AbstractHook : MonoBehaviour {
 
 	void OnCollisionEnter2D (Collision2D coll) {
 		string tag = coll.gameObject.tag;
-		if (tag == "player") {
-		} else {
+		if (tag != "player") {
 			isHooked = true;
 			isFired = false;
 			if (tag == "big") {
@@ -95,8 +94,8 @@ public abstract class AbstractHook : MonoBehaviour {
 				isPulling = true;
 				PullToPlayer (coll.gameObject);
 			} else {
+				print ("woops");
 			}
-
 		}
 	}
 
