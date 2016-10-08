@@ -6,8 +6,8 @@ public class GrappleHook : AbstractHook {
 	// Use this for initialization
 	protected override void Start () {
 		base.Start ();
-		Speed = 9f;
-		RetractSpeed = 3f;
+		Speed = 12f;
+		RetractSpeed = 9f;
 	}
 	
 //	// Update is called once per frame

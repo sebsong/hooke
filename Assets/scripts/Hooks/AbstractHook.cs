@@ -18,17 +18,22 @@ public abstract class AbstractHook : MonoBehaviour {
 
 	public bool isHooked = false;
 	private Vector3 dirPlayer;
+	private float minDist;
+
+	private bool isPulling = false;
+	private Rigidbody2D pulledRb;
 
 	// Use this for initialization
 	protected virtual void Start () {
 		rb = GetComponent<Rigidbody2D> ();
 		playerRb = player.GetComponent<Rigidbody2D> ();
+		minDist = 0.75f;
 	}
 
 	public void Fire() {
 		if (!isFired && !isHooked) {
-			dirFired = hookGun.transform.up;
-			offset = dirFired * .25f;
+			dirHook = hookGun.transform.up;
+			offset = dirHook * 0.25f;
 			transform.position = hookGun.transform.position + offset;
 			transform.rotation = hookGun.transform.rotation * Quaternion.Euler (0, 0, 180f);
 			gameObject.SetActive (true);
@@ -37,8 +42,20 @@ public abstract class AbstractHook : MonoBehaviour {
 	}
 
 	void ReturnToHook() {
-		dirToHook = transform.position - player.transform.position;
-		playerRb.velocity = dirToHook * RetractSpeed;
+		dirHook = Vector2.zero;
+		dirPlayer = (transform.position - player.transform.position).normalized;
+	}
+
+	void PullTogether(GameObject pulledObj) {
+		dirHook = (player.transform.position - pulledObj.transform.position).normalized;
+		dirPlayer = -dirHook;
+		pulledRb = pulledObj.GetComponent<Rigidbody2D> ();
+	}
+
+	void PullToPlayer(GameObject pulledObj) {
+		dirHook = (player.transform.position - pulledObj.transform.position).normalized;
+		dirPlayer = Vector2.zero;
+		pulledRb = pulledObj.GetComponent<Rigidbody2D> ();
 	}
 
 	// Update is called once per frame
@@ -47,27 +64,39 @@ public abstract class AbstractHook : MonoBehaviour {
 			rb.velocity = dirHook * Speed;
 		}
 		if (isHooked) {
+			rb.velocity = dirHook * RetractSpeed;
+			playerRb.velocity = dirPlayer * RetractSpeed;
+			if (isPulling) {
+				pulledRb.velocity = dirHook * RetractSpeed;
+			}
+			if (Vector2.Distance(player.transform.position, transform.position) < minDist) {
+				isHooked = false;
+				gameObject.SetActive (false);
+				if (isPulling) {
+					isPulling = false;
+					pulledRb.velocity = Vector2.zero;
+				}
+			}
 		}
 	}
 
 	void OnCollisionEnter2D (Collision2D coll) {
-		switch (coll.gameObject.tag) 
-		{
-			case "player":
-				isHooked = false;
-				gameObject.SetActive (false);
-				break;
-			case "big":
-				isHooked = true;
-				isFired = false;
-				rb.velocity = Vector2.zero;
-				break;
-			case "medium":
-				break;
-			case "small":
-				break;
-			default:
-				break;
+		string tag = coll.gameObject.tag;
+		if (tag == "player") {
+		} else {
+			isHooked = true;
+			isFired = false;
+			if (tag == "big") {
+				ReturnToHook ();
+			} else if (tag == "medium") {
+				isPulling = true;
+				PullTogether (coll.gameObject);
+			} else if (tag == "small") {
+				isPulling = true;
+				PullToPlayer (coll.gameObject);
+			} else {
+			}
+
 		}
 	}
 
