@@ -6,14 +6,14 @@ public class Player : AbstractCharacter {
 	private float _x;
 	private float _y;
 
-	Rigidbody2D rigidBody;
+	Rigidbody2D rb;
 
 	public GameObject hookObj;
 	AbstractHook hook;
 
 	// Use this for initialization
 	void Start () {
-		rigidBody = GetComponent<Rigidbody2D> ();
+		rb = GetComponent<Rigidbody2D> ();
 		hook = hookObj.GetComponent<GrappleHook> ();
 		_x = transform.position.x;
 		_y = transform.position.y;
@@ -27,8 +27,8 @@ public class Player : AbstractCharacter {
 			Rotate ();
 			if (Input.GetKeyDown ("space")) {
 				hook.Fire ();
-				rigidBody.velocity = Vector2.zero;
-				rigidBody.angularVelocity = 0;
+				rb.velocity = Vector2.zero;
+				rb.angularVelocity = 0;
 			}
 		}
 		if (Health <= 0) {
@@ -41,7 +41,7 @@ public class Player : AbstractCharacter {
 		_y = Input.GetAxisRaw ("Vertical");
 		Vector2 movementDir = new Vector2(_x, _y);
 		movementDir.Normalize ();
-		rigidBody.velocity = movementDir * Speed;
+		rb.velocity = movementDir * Speed;
 	}
 
 	void Rotate() {
@@ -57,4 +57,14 @@ public class Player : AbstractCharacter {
 	protected override void Attack () {
 	}
 
+	void OnCollisionEnter2D (Collision2D coll) {
+		if (coll.gameObject.tag != "hook") {
+			rb.velocity = Vector2.zero;
+			if (hook.isPulling) {
+				hook.pulledRb.velocity = Vector2.zero;
+			} else {
+				hook.RetractHook ();
+			}
+		}
+	}
 }
