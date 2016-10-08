@@ -24,52 +24,49 @@ public abstract class AbstractHook : MonoBehaviour {
 	private Rigidbody2D pulledRb;
 
 	// Use this for initialization
-	protected virtual void Start () {
+	protected virtual void Awake () {
 		rb = GetComponent<Rigidbody2D> ();
 		playerRb = player.GetComponent<Rigidbody2D> ();
 		minDist = 0.75f;
 	}
 
 	public void Fire() {
-		if (!isFired && !isHooked) {
-			dirHook = hookGun.transform.up;
-			offset = dirHook * 0.25f;
-			transform.position = hookGun.transform.position + offset;
-			transform.rotation = hookGun.transform.rotation * Quaternion.Euler (0, 0, 180f);
-			gameObject.SetActive (true);
-			isFired = true;
-		}
+		isFired = true;
+		dirHook = hookGun.transform.up;
+		offset = dirHook * 0.25f;
+		transform.position = hookGun.transform.position + offset;
+		transform.rotation = hookGun.transform.rotation * Quaternion.Euler (0, 0, 180f);
+		gameObject.SetActive (true);
+		rb.velocity = dirHook * Speed;
 	}
 
 	void ReturnToHook() {
-		dirHook = Vector2.zero;
 		dirPlayer = (transform.position - player.transform.position).normalized;
+		playerRb.velocity = dirPlayer * RetractSpeed;
+		rb.velocity = Vector2.zero;
 	}
 
 	void PullTogether(GameObject pulledObj) {
+		pulledRb = pulledObj.GetComponent<Rigidbody2D> ();
 		dirHook = (player.transform.position - pulledObj.transform.position).normalized;
 		dirPlayer = -dirHook;
-		pulledRb = pulledObj.GetComponent<Rigidbody2D> ();
+		rb.velocity = dirHook * RetractSpeed;
+		playerRb.velocity = dirPlayer * RetractSpeed;
+		pulledRb.velocity = rb.velocity;
 	}
 
 	void PullToPlayer(GameObject pulledObj) {
-		dirHook = (player.transform.position - pulledObj.transform.position).normalized;
-		dirPlayer = Vector2.zero;
 		pulledRb = pulledObj.GetComponent<Rigidbody2D> ();
+		dirHook = (player.transform.position - pulledObj.transform.position).normalized;
+		playerRb.velocity = Vector2.zero;
+		rb.velocity = dirHook * RetractSpeed;
+		pulledRb.velocity = rb.velocity;
 	}
 
 	// Update is called once per frame
 	void Update () {
-		if (isFired) {
-			rb.velocity = dirHook * Speed;
-		}
 		if (isHooked) {
-			rb.velocity = dirHook * RetractSpeed;
-			playerRb.velocity = dirPlayer * RetractSpeed;
-			if (isPulling) {
-				pulledRb.velocity = dirHook * RetractSpeed;
-			}
-			if (Vector2.Distance(player.transform.position, transform.position) < minDist || playerRb.velocity == Vector2.zero) {
+			if (Vector2.Distance(player.transform.position, transform.position) < minDist) {
 				isHooked = false;
 				gameObject.SetActive (false);
 				if (isPulling) {

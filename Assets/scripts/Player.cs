@@ -25,14 +25,14 @@ public class Player : AbstractCharacter {
 		if (!hook.isHooked && !hook.isFired) {
 			Move ();
 			Rotate ();
+			if (Input.GetKeyDown ("space")) {
+				hook.Fire ();
+				rigidBody.velocity = Vector2.zero;
+				rigidBody.angularVelocity = 0;
+			}
 		}
 		if (Health <= 0) {
 			Die ();
-		}
-		if (Input.GetKeyDown ("space")) {
-			hook.Fire ();
-			rigidBody.velocity = Vector2.zero;
-			rigidBody.angularVelocity = 0;
 		}
 	}
 
