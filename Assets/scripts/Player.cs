@@ -26,6 +26,9 @@ public class Player : AbstractCharacter {
 		if (Health <= 0) {
 			Die ();
 		}
+		if (Input.GetKeyDown ("space")) {
+			hook.Fire ();
+		}
 	}
 
 	protected override void Move() {

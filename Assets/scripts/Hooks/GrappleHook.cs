@@ -5,6 +5,7 @@ public class GrappleHook : AbstractHook {
 
 	// Use this for initialization
 	void Start () {
+		base.Start ();
 		Speed = 15f;
 	}
 	
