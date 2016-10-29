@@ -12,7 +12,7 @@ public abstract class AbstractHook : MonoBehaviour {
 	public GameObject hookGun;
 
 	public bool isFired = false;
-	private Vector3 offset;
+	//private Vector3 offset;
 	private Vector3 dirHook;
 	private Rigidbody2D rb;
 
@@ -33,7 +33,7 @@ public abstract class AbstractHook : MonoBehaviour {
 	public void Fire() {
 		isFired = true;
 		dirHook = hookGun.transform.up;
-		offset = dirHook * 0.1f;
+		//offset = dirHook * 0.1f;
 		transform.position = hookGun.transform.position;
 		transform.rotation = hookGun.transform.rotation * Quaternion.Euler (0, 0, 180f);
 		gameObject.SetActive (true);
